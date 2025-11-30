@@ -6,7 +6,7 @@
     (modulesPath + "/installer/sd-card/sd-image.nix")
   ];
 
-  # boot stuff is already configured with `boot.loader.raspberryPi` and
+  # boot stuff is already configured with `boot.loader.nixosRaspberryPi` and
   # `hardware.raspberry-pi.config`
 
   # with default options set by sdImage it won't be mounted at all
@@ -20,13 +20,13 @@
 
   sdImage = {
     imageBaseName = let
-      cfg = config.boot.loader.raspberryPi;
+      cfg = config.boot.loader.nixosRaspberryPi;
     in "nixos-sd-image-rpi${cfg.variant}-${cfg.bootloader}";
 
     firmwareSize = 128;
     populateFirmwareCommands = let
-      uboot = config.boot.loader.raspberryPi.ubootPackage;
-      raspberrypifw = config.boot.loader.raspberryPi.firmwarePackage;
+      uboot = config.boot.loader.nixosRaspberryPi.ubootPackage;
+      raspberrypifw = config.boot.loader.nixosRaspberryPi.firmwarePackage;
       configTxt = config.hardware.raspberry-pi.config-output;
       rpifwdir = "${raspberrypifw}/share/raspberrypi/boot";
       populateFirmware = pkgs.writeShellApplication {

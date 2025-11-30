@@ -3,7 +3,7 @@
 with lib;
 
 let
-  cfg = config.boot.loader.raspberryPi;
+  cfg = config.boot.loader.nixosRaspberryPi;
   isAarch64 = pkgs.stdenv.hostPlatform.isAarch64;
 
   ubootBinName = if isAarch64 then "u-boot-rpi-arm64.bin" else "u-boot-rpi.bin";
@@ -193,17 +193,9 @@ let
 in
 
 {
-  disabledModules = [
-    # the module has been remove in nixpkgs, but that shouldn't prevent us
-    # from using the now free (!) name for our module
-    # mkRemovedOptionModule in `"modulesPath + rename.nix"`, unfortunately,
-    # prevents us from doing so in upstream nixpkgs
-    { key = "removedOptionModule#boot_loader_raspberryPi"; }
-  ];
-
   options = {
 
-    boot.loader.raspberryPi = {
+    boot.loader.nixosRaspberryPi = {
       enable = mkOption {
         default = false;
         type = types.bool;
@@ -235,7 +227,7 @@ in
           This package will be used to:
           - install RaspberryPi firmware a.k.a "boot code" from
           - install device tree files from when
-            `boot.loader.raspberryPi.useGenerationDeviceTree == false`.
+            `boot.loader.nixosRaspberryPi.useGenerationDeviceTree == false`.
         '';
       };
 
@@ -274,7 +266,7 @@ in
           Whether to use device tree supplied by:
           - the generation's kernel (when `true`)
           - or from the vendor's firmware package set with
-            `boot.loader.raspberryPi.firmwarePackage` (when `false`)
+            `boot.loader.nixosRaspberryPi.firmwarePackage` (when `false`)
 
           `kernelboot` (legacy), `uboot`: Note that this affects all generations,
             regardless of the setting value used in their configurations because
@@ -432,8 +424,8 @@ in
         '';
       };
       boot.loader.grub.enable = false;
-      boot.loader.raspberryPi.firmwarePopulateCmd = populateCmds.${cfg.bootloader}.firmware;
-      boot.loader.raspberryPi.bootPopulateCmd = populateCmds.${cfg.bootloader}.boot;
+      boot.loader.nixosRaspberryPi.firmwarePopulateCmd = populateCmds.${cfg.bootloader}.firmware;
+      boot.loader.nixosRaspberryPi.bootPopulateCmd = populateCmds.${cfg.bootloader}.boot;
     })
 
     (mkIf (cfg.enable && (cfg.bootloader == "kernel")) {
